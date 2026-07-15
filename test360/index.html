@@ -2,25 +2,84 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <title>Vidéo 360</title>
+
+    <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+
     <style>
         html, body {
             margin: 0;
             width: 100%;
             height: 100%;
+            overflow: hidden;
             background: black;
         }
-        video {
-            width: 100%;
-            height: 100%;
+
+        #startButton {
+            position: fixed;
+            z-index: 10;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 18px 28px;
+            border: 0;
+            border-radius: 10px;
+            background: white;
+            color: black;
+            font-size: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
-    <video controls autoplay loop>
-        <source src="video360.mp4" type="video/mp4">
-        Votre navigateur ne prend pas en charge la vidéo.
-    </video>
+
+<button id="startButton">Démarrer la vidéo 360</button>
+
+<a-scene
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: true"
+    loading-screen="enabled: false">
+
+    <a-assets>
+        <video
+            id="video360"
+            src="video360.mp4"
+            loop
+            playsinline
+            webkit-playsinline
+            crossorigin="anonymous">
+        </video>
+    </a-assets>
+
+    <a-videosphere
+        src="#video360"
+        rotation="0 -90 0">
+    </a-videosphere>
+
+    <a-camera
+        look-controls="magicWindowTrackingEnabled: true; touchEnabled: true; mouseEnabled: true"
+        wasd-controls-enabled="false">
+    </a-camera>
+
+</a-scene>
+
+<script>
+    const video = document.getElementById("video360");
+    const button = document.getElementById("startButton");
+
+    button.addEventListener("click", async () => {
+        try {
+            await video.play();
+            button.style.display = "none";
+        } catch (error) {
+            console.error("La lecture n'a pas pu démarrer :", error);
+        }
+    });
+</script>
+
 </body>
 </html>
